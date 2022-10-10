@@ -8,6 +8,8 @@ const errorHandler = async (
   res: Response,
   _next: NextFunction,
 ) => {  
+  console.log(err);
+  
   if (err instanceof ZodError) { 
     return res.status(400).json({ message: err.message });
   }
@@ -17,10 +19,10 @@ const errorHandler = async (
   const mappedError = errorCatalog[messageAsErrorType];
   if (mappedError) {
     const { httpStatus, message } = mappedError;
-    return res.status(httpStatus).json({ message });
+    return res.status(httpStatus).json({ error: message });
   }
 
-  return res.status(500).json({ message: err.message });
+  return res.status(500).json({ error: err.message });
 };
 
 export default errorHandler;
