@@ -4,6 +4,7 @@ import { ZodError } from 'zod';
 import CarModel from '../../../models/Car.Model';
 import CarService from '../../../services/Car.Service';
 import { ICar } from '../../../interfaces/ICar';
+import { ErrorTypes } from '../../../errors/catalog';
 import { mockCar, mockCarId, mockCars, mockCarUpdated } from '../../mocks';
 
 describe('Testes CarService', () => {
@@ -11,7 +12,6 @@ describe('Testes CarService', () => {
   const service = new CarService(model);
 
   const id = 'invalid';
-  const message = 'Object not found';
 
   describe('Método "create"', () => {
     beforeEach(() => {
@@ -22,7 +22,6 @@ describe('Testes CarService', () => {
 
     it('Verifica se o objeto criado é retornado corretamente', async () => {
       const car = await service.create(mockCar);
-      console.log(car);
       
       expect(car).to.be.deep.equal(mockCarId);
     });
@@ -66,12 +65,11 @@ describe('Testes CarService', () => {
       expect(car).to.be.deep.equal(mockCarId);
     });
 
-    it('Verifica se um erro é lançado caso a id informada não seja encontrada', async () => {
+    it('Verifica erro id informado não seja encontrado', async () => {
       try {
         await service.readOne(id);
-      } catch (e: any) {
-        expect(e.code).to.be.equal(404);
-        expect(e.message).to.be.deep.equal(message);
+      } catch (err: any) {
+        expect(err.message).to.be.eq(ErrorTypes.EntityNotFound);
       }
     });
   });
@@ -95,9 +93,8 @@ describe('Testes CarService', () => {
     it('Verifica erro caso id informado não seja encontrada', async () => {
       try {
         await service.update(id, mockCarUpdated);
-      } catch (e: any) {
-        expect(e.code).to.be.equal(404);
-        expect(e.message).to.be.deep.equal(message);        
+      } catch (err: any) {
+        expect(err.message).to.be.eq(ErrorTypes.EntityNotFound);       
       }
     });
 
