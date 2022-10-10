@@ -4,7 +4,7 @@ import { ZodError } from 'zod';
 import CarModel from '../../../models/Car.Model';
 import CarService from '../../../services/Car.Service';
 import { ICar } from '../../../interfaces/ICar';
-import { mockCar, mockCarId } from '../../mocks';
+import { mockCar, mockCarId, mockCars } from '../../mocks';
 
 describe('Testes CarService', () => {
   const model = new CarModel();
@@ -30,6 +30,21 @@ describe('Testes CarService', () => {
       } catch (e: any) {
         expect(e).to.be.instanceOf(ZodError);
       }
+    });
+  });
+
+  describe('Verificação do método "read"', () => {
+    beforeEach(() => {
+      sinon.stub(model, 'read').resolves(mockCars);
+    });
+
+    afterEach(sinon.restore);
+
+    it('Verifica se um array de carros é retornado corretamente.', async () => {
+      const cars = await service.read();
+
+      expect(cars).to.be.an('array');
+      expect(cars.length).to.be.equal(2);
     });
   });
 });
